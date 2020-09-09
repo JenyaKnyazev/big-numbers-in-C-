@@ -1,10 +1,7 @@
 #include <iostream>
 #include <stdio.h>
-#include <stdlib.h>
 #include <list>
-#include <iterator>
 using namespace std;
-
 void scan(list<char> *t){
     char ch=0;
     while(ch!='\n'){
@@ -100,6 +97,8 @@ void multiply_(list<char> *m,list<char>*m2,list<char> *result){
     }
 }
 int compare_(list<char> *m,list<char> *m2){
+    remove_zero_from_start(m);
+    remove_zero_from_start(m2);
     if( (*m).size()>(*m2).size())
         return 1;
     if( (*m).size()<(*m2).size())
@@ -124,6 +123,49 @@ void division_(list<char>*m,list<char>*m2,list<char>*res){
 }
 void clean_buff(){
     while(getchar()!='\n');
+}
+void division2(list<char> *m,list<char> *m2,list<char>*res){
+    list<char>temp;
+    list<char>::iterator i;
+    for(i=(*m).begin();i!=(*m).end();){
+        temp.push_back( *i);
+        i++;
+        while(i!=(*m).end()&&compare_(&temp,m2)==-1){
+            (*res).push_back(0);
+            temp.push_back(*i);
+            i++;
+        }
+        int n=0;
+        while(compare_(&temp,m2)!=-1){
+            minus_(&temp,m2);
+            n++;
+        }
+        if(n){
+           (*res).push_back(n);
+        }else
+            (*res).push_back(0);
+    }
+    remove_zero_from_start(res);
+}
+void multiply2(list<char>*m,list<char>*m2,list<char>*res){
+    list<char>::reverse_iterator itr;
+    list<char>::reverse_iterator itr2;
+    list<char>::reverse_iterator itr3;
+    for(int i=0;i<(*m).size();i++)
+        (*res).push_back(0);
+    for(int i=0;i<(*m2).size();i++)
+        (*res).push_back(0);
+    int i=0;
+    for(itr=(*m).rbegin();itr!=(*m).rend();itr++,i++){
+        itr3=(*res).rbegin();
+        for(int k=0;k<i;k++)
+            itr3++;
+        for(itr2=(*m2).rbegin();itr2!=(*m2).rend();itr2++,itr3++){
+            *itr3+=(*itr)*(*itr2);
+        }
+        refresh(res);
+    }
+    remove_zero_from_start(res);
 }
 void run(){
     list<char> L1;
@@ -151,10 +193,10 @@ void run(){
                 minus_(&L3,&L2);
                 break;
             case '*':
-                multiply_(&L1,&L2,&L3);
+                multiply2(&L1,&L2,&L3);
                 break;
             case '/':
-                division_(&L1,&L2,&L3);
+                division2(&L1,&L2,&L3);
                 break;
         }
         cout<<"\nResult = ";
